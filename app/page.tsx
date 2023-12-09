@@ -1,113 +1,161 @@
-import Image from 'next/image'
+// https://www.softpost.org/tech/how-to-write-mathematical-or-physics-expressions-in-react
+// https://tex.stackexchange.com/questions/22100/the-bar-and-overline-commands
+
+import 'katex/dist/katex.min.css';
+import Link from 'next/link';
+import { InlineMath } from 'react-katex';
+import { correlation } from './utils';
+import { PointsSVG } from './PointsSVG';
+
+const POINTS: [number, number][][] = [
+  [
+    [ -0.2505724388559072, 0.26064950630092254 ],
+    [ 0.41973248055687007, -0.47301042548510963 ],
+    [ 0.9244389237368176, -0.6962376389216522 ],
+    [ -0.5793535904932194, 0.7495929802997561 ],
+    [ 0.7173990738226168, -0.5639312265830932 ],
+    [ 0.418328085109251, -0.4888117333686069 ],
+    [ 0.8923005868788865, -0.8832842824244806 ],
+    [ -0.8396784145783585, 0.7572112597261091 ],
+    [ 0.3282328079408967, -0.14903538135092176 ],
+    [ -0.5284865722369028, 0.5244112146149037 ],
+    [ -0.9478186817389727, 1.1384914443847858 ],
+    [ 0.700708108320387, -0.45623124873951076 ],
+    [ -0.9739099129709139, 1.0881879304739885 ],
+    [ 0.32887258403383113, -0.18183696636701904 ],
+    [ 0.5491347736672951, -0.7869992994002672 ],
+    [ 0.904283235037294, -0.8164453967884261 ],
+    [ 0.6696270235086357, -0.5824583460610704 ],
+    [ 0.2752952731336622, -0.2225038234100457 ],
+    [ 0.5130870488333192, -0.5097790169839441 ],
+    [ 0.004601906908367592, 0.12625226650294566 ]
+  ],
+  [
+    [ -0.9938611618344448, -0.1661347903421993 ],
+    [ -0.12665662457792326, 0.08241178638432549 ],
+    [ -0.6563648683067829, 0.1547581046439674 ],
+    [ -0.8240345143451435, 0.5196674327661046 ],
+    [ 0.5365931898154286, -0.15189711539833914 ],
+    [ -0.4496669725681901, 0.3473729135492683 ],
+    [ -0.6489507396297869, 0.2980305617569941 ],
+    [ -0.7168625897076706, 0.2264397763151616 ],
+    [ -0.07015081906222553, -0.20404043810785877 ],
+    [ -0.13177498501388607, 0.3874515830129984 ],
+    [ 0.621016675837851, -0.3627883944807661 ],
+    [ -0.7669907973086851, 0.4274549717338808 ],
+    [ 0.6716208332822999, 0.12231302649401254 ],
+    [ -0.43586809649101266, 0.28295599390498144 ],
+    [ 0.22113718961603857, 0.07866861471883144 ],
+    [ 0.9643560028137199, -0.12020339403644156 ],
+    [ -0.4463629999663383, 0.1087841197096751 ],
+    [ 0.6753413519082079, 0.02068642572563814 ],
+    [ -0.7493479867057786, 0.4859905045760825 ],
+    [ 0.3143791266950422, -0.39986717086381995 ]
+  ],
+  [
+    [ 0.5515377696176604, -0.2043048962343394 ],
+    [ 0.6914410984755315, -0.2526084801434542 ],
+    [ -0.5852258653281819, 0.12212572439996937 ],
+    [ 0.14699001639311993, 0.03683280833341019 ],
+    [ 0.4191414514137408, 0.11856157226470926 ],
+    [ 0.11901154227777289, 0.23006376095032566 ],
+    [ 0.604485649885949, 0.029418401758377965 ],
+    [ 0.437330709270761, -0.12192212549971194 ],
+    [ 0.3277588608216857, -0.1798753087125007 ],
+    [ 0.2467761145224956, -0.13960889701256002 ],
+    [ 0.7571411611252241, -0.29980298802059846 ],
+    [ 0.5331733712436839, -0.18009681950462367 ],
+    [ 0.051190256921016086, -0.2207493837861934 ],
+    [ -0.3280541924469329, -0.2687932442406331 ],
+    [ 0.3010172653326948, -0.024239100315464758 ],
+    [ 0.15360075465221978, 0.22616771602624086 ],
+    [ 0.5293082042368327, -0.13852305528568168 ],
+    [ 0.845421883368132, 0.08256640679191636 ],
+    [ -0.8987340323865789, -0.27439910490436337 ],
+    [ 0.26339690892747436, -0.017443218828058403 ]
+  ],
+  [
+    [ -0.2822372749237734, 0.08298951310151614 ],
+    [ 0.8502741272595271, 0.17994927878505418 ],
+    [ 0.8691848516587752, 0.45953367706686754 ],
+    [ -0.3197078677316023, -0.5260029793041929 ],
+    [ 0.10771536262368553, 0.46613677236222906 ],
+    [ 0.7359615667830703, 0.603711998231251 ],
+    [ 0.6128198618287137, -0.036561325979951584 ],
+    [ 0.6843956639096418, 0.5999292655357533 ],
+    [ 0.993453730937075, 0.1782808628002885 ],
+    [ -0.607280328172787, 0.052603086313069314 ],
+    [ -0.4830888420312771, 0.49833595324249447 ],
+    [ -0.8982520746878477, -0.36076715340865817 ],
+    [ 0.9232281753880462, -0.16153959093267498 ],
+    [ 0.8345926108815629, 0.11883350819231679 ],
+    [ -0.6576233590077027, -0.7024290412088705 ],
+    [ 0.21416347881843745, 0.36480674208514746 ],
+    [ 0.07799430397585105, 0.15683983594892767 ],
+    [ 0.16532337712700906, 0.03606235691416889 ],
+    [ -0.8841209159370624, -0.28256185941980216 ],
+    [ 0.11282728017482313, 0.05382693326715089 ]
+  ],
+  [
+    [ -0.11234714291758552, -0.11976801869601408 ],
+    [ 0.009972826461574158, 0.012099676086738783 ],
+    [ -0.3492077285491648, -0.3068655967156276 ],
+    [ 0.2936954850485871, 0.23728628643850805 ],
+    [ -0.029936634570636667, -0.035834602713894874 ],
+    [ -0.021734796890737318, 0.01044221862941819 ],
+    [ 0.8173825053431263, 0.6598932096903989 ],
+    [ 0.9831098123907749, 0.8226660828030274 ],
+    [ -0.07721219432154536, -0.040998051948689856 ],
+    [ 0.8535019481154662, 0.6877961245653843 ],
+    [ 0.8757349547372422, 0.7112400430177771 ],
+    [ 0.7644997551715811, 0.6341741594064753 ],
+    [ 0.1301382100643984, 0.11217925953798105 ],
+    [ 0.39820344227891, 0.35253422482967234 ],
+    [ -0.4601383364884857, -0.40951650023564024 ],
+    [ -0.01007443183833523, 0.002171561359709289 ],
+    [ 0.050120984336285535, 0.05656820014564638 ],
+    [ 0.1677623630020637, 0.17335742930318607 ],
+    [ 0.2672303218759122, 0.24569224865867756 ],
+    [ 0.07053618844176635, 0.04758055402137098 ]
+  ],
+];
+
+function PointsAndCorrelation({ points }: { points: [number, number][] }) {
+  let pointsCorrelation = Math.round(1000 * correlation(points)) / 1000;
+
+  return (
+    <div className="flex flex-col items-center gap-3">
+      <PointsSVG points={points} />
+      <p>Correlation: {pointsCorrelation}</p>
+    </div>
+  );
+}
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
+    <main className="max-w-3xl mx-auto p-3 space-y-3">
+      <h1 className="text-3xl">Correlation</h1>
+      <h2 className="text-xl">What is the Pearson correlation coefficient?</h2>
+      <p>Let (x<sub>1</sub>, y<sub>1</sub>),...,(x<sub>n</sub>, y<sub>n</sub>) be n points.</p>
+      <p>
+        Then their <a href="https://en.wikipedia.org/wiki/Pearson_correlation_coefficient">Pearson Correlation coefficient</a> is defined as <InlineMath math="\dfrac{\sum_{i=1}^n(x - \overline{x})(y - \overline{y})}{\sqrt{\sum_{i=1}^n(x - \overline{x})^2} \sqrt{\sum_{i=1}^n(y - \overline{y})^2}}" />,
+        where <InlineMath math="\overline{x}" /> and <InlineMath math="\overline{y}" /> are the average values of the x values and y values.
+      </p>
+      <p>This value lies between -1 and 1 and measures their linear correlation.</p>
+      <p>Examples</p>
+      <div className="flex flex-wrap gap-5">
+        {POINTS.map((points, index) => <PointsAndCorrelation key={index} points={points}/>)}
       </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+      <h2 className="text-xl">What does this website do?</h2>
+      <p>
+        This website allows users to guess the correlation of a set of points.
+        The goal is to see how people are at guessing correlations.
+      </p>
+      <p>
+        When you make a guess, the website collects the actual correlation, your guess and your guess number.
+        All the collected data will later be made publically accessible on this website.
+      </p>
+      <div className="flex justify-between"><Link href="/guess" className="underline">Link to the guess page</Link> <a href="https://github.com/ShouvikGhosh2048/correlation-experiment" className="underline">Github</a></div>
     </main>
-  )
+  );
 }
