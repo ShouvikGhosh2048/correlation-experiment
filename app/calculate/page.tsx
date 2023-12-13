@@ -22,9 +22,9 @@ function Point({ point, setPoint, deletePoint }: PointProps) {
                 setEdit(null);
             }} className="flex justify-between">
                 <div className="flex gap-2">
-                    <input type="number" min="-1" max="1" step="0.001" className="w-20"
+                    <input type="number" min="-1" max="1" step="0.001" className="w-20 border border-slate-500 p-1 rounded"
                         value={edit[0]} onChange={(e) => { setEdit([e.target.value, edit[1]]) }} required />
-                    <input type="number" min="-1" max="1" step="0.001" className="w-20"
+                    <input type="number" min="-1" max="1" step="0.001" className="w-20 border border-slate-500 p-1 rounded"
                         value={edit[1]} onChange={(e) => { setEdit([edit[0], e.target.value]) }} required />
                 </div>
                 <div className="flex gap-5">
