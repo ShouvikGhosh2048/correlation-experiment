@@ -47,8 +47,8 @@ export default function Guess() {
             {
                 !showAnswer && (
                     <form className="flex justify-between w-full" onSubmit={onGuess}>
-                        <input className="border rounded p-1"
-                            placeholder='Guess' type="number"
+                        <input className="border border-slate-500 rounded p-1"
+                            placeholder='Correlation' type="number"
                             min='-1' max='1' step="0.001"
                             value={guess} onChange={(e) => {setGuess(e.target.value)}} required/>
                         <input className="bg-slate-900 text-white p-1 rounded" type="submit" value="Guess"/>

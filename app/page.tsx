@@ -3,7 +3,7 @@
 
 import 'katex/dist/katex.min.css';
 import Link from 'next/link';
-import { InlineMath } from 'react-katex';
+import { BlockMath, InlineMath } from 'react-katex';
 import { correlation } from './utils';
 import { PointsSVG } from './PointsSVG';
 
@@ -138,10 +138,13 @@ export default function Home() {
       <h2 className="text-xl">What is the Pearson correlation coefficient?</h2>
       <p>Let (x<sub>1</sub>, y<sub>1</sub>),...,(x<sub>n</sub>, y<sub>n</sub>) be n points.</p>
       <p>
-        Then their <a href="https://en.wikipedia.org/wiki/Pearson_correlation_coefficient">Pearson Correlation coefficient</a> is defined as <InlineMath math="\dfrac{\sum_{i=1}^n(x - \overline{x})(y - \overline{y})}{\sqrt{\sum_{i=1}^n(x - \overline{x})^2} \sqrt{\sum_{i=1}^n(y - \overline{y})^2}}" />,
-        where <InlineMath math="\overline{x}" /> and <InlineMath math="\overline{y}" /> are the average values of the x values and y values.
+        Then their <a href="https://en.wikipedia.org/wiki/Pearson_correlation_coefficient" className="underline">Pearson Correlation coefficient</a> is defined as:
       </p>
-      <p>This value lies between -1 and 1 and measures their linear correlation.</p>
+      <BlockMath math="\dfrac{\sum_{i=1}^n(x - \overline{x})(y - \overline{y})}{\sqrt{\sum_{i=1}^n(x - \overline{x})^2} \sqrt{\sum_{i=1}^n(y - \overline{y})^2}}" />
+      <p>
+        where <InlineMath math="\overline{x}" /> and <InlineMath math="\overline{y}" /> are the averages of the x and y values.
+      </p>
+      <p>This number lies between -1 and 1 and measures their linear correlation.</p>
       <p>Examples</p>
       <div className="flex flex-wrap gap-5">
         {POINTS.map((points, index) => <PointsAndCorrelation key={index} points={points}/>)}
@@ -153,9 +156,9 @@ export default function Home() {
       </p>
       <p>
         When you make a guess, the website collects the actual correlation, your guess and your guess number.
-        All the collected data will later be made publically accessible on this website.
+        All the collected data will later be made publicly accessible on this website.
       </p>
-      <div className="flex justify-between"><Link href="/guess" className="underline">Link to the guess page</Link> <a href="https://github.com/ShouvikGhosh2048/correlation-experiment" className="underline">Github</a></div>
+      <div className="flex justify-between"><Link href="/guess" className="underline">Start guessing!</Link> <a href="https://github.com/ShouvikGhosh2048/correlation-experiment" className="underline">Github</a></div>
     </main>
   );
 }

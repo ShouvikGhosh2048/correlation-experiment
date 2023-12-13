@@ -21,6 +21,7 @@ export default function RootLayout({
         <nav className="p-2 flex gap-3 bg-sky-700 text-white">
           <Link href="/">Home</Link>
           <Link href="/guess">Guess</Link>
+          <Link href="/calculate">Calculate</Link>
         </nav>
         {children}
       </body>
