@@ -156,7 +156,7 @@ export default function Home() {
       </p>
       <p>
         When you make a guess, the website collects the actual correlation, your guess and your guess number.
-        All the collected data will later be made publicly accessible on this website.
+        The results are available <Link href="/results" className="underline">here</Link>.
       </p>
       <div className="flex justify-between"><Link href="/guess" className="underline">Start guessing!</Link> <a href="https://github.com/ShouvikGhosh2048/correlation-experiment" className="underline">Github</a></div>
     </main>
