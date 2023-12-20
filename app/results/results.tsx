@@ -13,6 +13,101 @@ export interface Result {
     guessnumber: number,
 }
 
+function ResultsChart({ results }: { results: Result[] }) {
+    const [type, setType] = useState<'scatter' | 'histogram'>('scatter');
+
+    if (type === 'scatter') {
+        return (
+            <div>
+                <div className="flex justify-between">
+                    <button className="bg-gray-200 p-1 rounded" onClick={() => { setType('scatter'); }}>Scatter</button>
+                    <button className="bg-gray-200 p-1 rounded" onClick={() => { setType('histogram'); }}>Histogram</button>
+                </div>
+                <div className="w-80 h-80">
+                    <Scatter
+                        data={{
+                            datasets: [{
+                                label: 'Guesses',
+                                data: results.map(result => ({ x: result.actual, y: result.guess })),
+                                backgroundColor: 'black',
+                            }]
+                        }}
+                        options={{
+                            aspectRatio: 1,
+                            scales: {
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Actual'
+                                    }
+                                },
+                                y: {
+                                    title: {
+                                        display: true,
+                                        text: 'Guess'
+                                    }
+                                }
+                            }
+                        }}
+                    />
+                </div>
+            </div>
+        );
+    } else {
+        const dimension = 19;
+        const bins: number[][] = [];
+        for (let i = 0; i < dimension; i++) {
+            bins.push([]);
+            for (let j = 0; j < dimension; j++) {
+                bins[i].push(0);
+            }
+        }
+
+        results.forEach(result => {
+            let xIndex = Math.floor((result.actual + 1.0) * 0.5 * dimension);
+            if (xIndex < 0) {
+                xIndex = 0;
+            } else if (xIndex > dimension - 1) {
+                xIndex = dimension - 1;
+            }
+            let yIndex = dimension - 1 - Math.floor((result.guess + 1.0) * 0.5 * dimension);
+            if (yIndex < 0) {
+                yIndex = 0;
+            } else if (yIndex > dimension - 1) {
+                yIndex = dimension - 1;
+            }
+            bins[yIndex][xIndex]++;
+        });
+
+        let maxBinCount = 0;
+        for (let i = 0; i < dimension; i++) {
+            for (let j = 0; j < dimension; j++) {
+                maxBinCount = Math.max(maxBinCount, bins[i][j]);
+            }
+        }
+
+        for (let i = 0; i < dimension; i++) {
+            for (let j = 0; j < dimension; j++) {
+                bins[i][j] = 255 - Math.floor(bins[i][j] * 255.999 / maxBinCount);
+            }
+        }
+
+        return (
+            <div>
+                <div className="flex justify-between">
+                    <button className="bg-gray-200 p-1 rounded" onClick={() => { setType('scatter'); }}>Scatter</button>
+                    <button className="bg-gray-200 p-1 rounded" onClick={() => { setType('histogram'); }}>Histogram</button>
+                </div>
+                <div className="w-80 h-80 p-2">
+                    <svg width="100%" height="100%" viewBox={`0 0 ${dimension} ${dimension}`}>
+                        {bins.map((row, i) => row.map((color, j) => <rect key={dimension * i + j} x={j} y={i} width={1} height={1} fill={`rgb(${color},${color},${color})`} />))}
+                    </svg>
+                </div>
+            </div>
+        );
+    }
+}
+
 function Summary({ results }: { results: Result[] }) {
     const numberOfGuesses = results.length;
     if (numberOfGuesses === 0) {
@@ -46,34 +141,7 @@ function Summary({ results }: { results: Result[] }) {
     return (
         <div className="space-y-2">
             <p>Count: {numberOfGuesses}</p>
-            <div className="w-80 h-80">
-                <Scatter
-                    data={{
-                        datasets: [{
-                            label: 'Guesses',
-                            data: results.map(result => ({ x: result.actual, y: result.guess })),
-                            backgroundColor: 'black',
-                        }]
-                    }}
-                    options={{
-                        aspectRatio: 1,
-                        scales: {
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Actual'
-                                }
-                            },
-                            y: {
-                                title: {
-                                    display: true,
-                                    text: 'Guess'
-                                }
-                            }
-                        }
-                    }}
-                />
-            </div>
+            <ResultsChart results={results} />
             <p>Distribution of |guess - actual|</p>
             <div className="w-80 h-80">
                 <Bar
@@ -140,27 +208,31 @@ export function Results({
     });
 
     return (
-        <div className="p-3 space-y-5 mx-auto w-fit">
+        <div className="p-3 space-y-7 mx-auto w-fit">
             <h1 className="text-3xl">Results</h1>
             <p>API endpoint for all results: <Link href="/correlation" className="underline">/correlation</Link></p>
-            <h2 className="text-xl">Guesses:</h2>
-            <Summary results={results} />
-            <h2 className="text-xl">Distribution of guess number:</h2>
-            <p>Max guess number: {maxGuessNumber}</p>
-            <div className="w-80 h-80">
-                <Bar
-                    data={{
-                        labels: guessNumberBins.map(bin => bin.label),
-                        datasets: [{
-                            label: 'Guess numbers',
-                            data: guessNumberBins.map(bin => bin.count),
-                            backgroundColor: 'gray',
-                        }]
-                    }}
-                    options={{
-                        aspectRatio: 1
-                    }}
-                />
+            <div>
+                <h2 className="text-xl">Guesses:</h2>
+                <Summary results={results} />
+            </div>
+            <div>
+                <h2 className="text-xl">Distribution of guess number:</h2>
+                <p>Max guess number: {maxGuessNumber}</p>
+                <div className="w-80 h-80">
+                    <Bar
+                        data={{
+                            labels: guessNumberBins.map(bin => bin.label),
+                            datasets: [{
+                                label: 'Guess numbers',
+                                data: guessNumberBins.map(bin => bin.count),
+                                backgroundColor: 'gray',
+                            }]
+                        }}
+                        options={{
+                            aspectRatio: 1
+                        }}
+                    />
+                </div>
             </div>
             <ResultsForGuessNumber results={results} />
         </div>
